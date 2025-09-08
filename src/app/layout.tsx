@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Tumblbug Agent",
-  description: "Tumblbug Agent Inbox UX by LangChain",
+  title: "Kingdom Builder School Q&A",
+  description: "Kingdom Builder School Q&A",
 };
 
 export default function RootLayout({
@@ -23,22 +23,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-HVVC138HDS" />
         <script
             dangerouslySetInnerHTML={{
               __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-
-                gtag('config', 'G-HVVC138HDS', {
-                  page_path: window.location.pathname,
-                });
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-N7T6J24C');
               `,
             }}
           />
       </head>
       <body className={inter.className}>
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N7T6J24C" height="0" width="0" style={{display: 'none', visibility: 'hidden'}}></iframe></noscript>
         <NuqsAdapter>{children}</NuqsAdapter>
       </body>
     </html>

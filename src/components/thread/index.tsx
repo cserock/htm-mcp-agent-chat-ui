@@ -474,7 +474,7 @@ export function Thread() {
 
                     <div className="flex items-center justify-between p-2 pt-4">
                       <div className="flex items-center gap-2">
-                        <Label
+                        {/* <Label
                           htmlFor="file-input"
                           className="flex cursor-pointer items-center gap-2"
                         >
@@ -503,7 +503,7 @@ export function Thread() {
                           >
                             도구 호출 숨기기
                           </Label>
-                        </div>
+                        </div> */}
                       </div>
                       {stream.isLoading ? (
                         <Button

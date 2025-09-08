@@ -1,6 +1,6 @@
-# 🖥️ tbb-mcp-agent-chat-ui
+# 🖥️ htm-mcp-agent-chat-ui
 
-`tbb-mcp-agent-chat-ui` 는 `messages` 키를 가진 모든 LangGraph 서버와 채팅 인터페이스를 통해 대화할 수 있는 Next.js 애플리케이션입니다.
+`htm-mcp-agent-chat-ui` 는 `messages` 키를 가진 모든 LangGraph 서버와 채팅 인터페이스를 통해 대화할 수 있는 Next.js 애플리케이션입니다.
 
 > [!NOTE]
 > tbb-mcp-agent-chat-ui는 LangGraph 의 공식 템플릿인 [Agent Chat UI](https://github.com/langchain-ai/agent-chat-ui) 의 포크 버전입니다.
