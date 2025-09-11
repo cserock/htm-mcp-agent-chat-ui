@@ -2,7 +2,7 @@ import { v4, validate } from "uuid";
 import { getApiKey } from "@/lib/api-key";
 import { Thread } from "@langchain/langgraph-sdk";
 import { useQueryState } from "nuqs";
-import { useLocalStorage } from 'usehooks-ts'
+import { useLocalStorage } from "usehooks-ts";
 import {
   createContext,
   useContext,
@@ -38,11 +38,13 @@ export function getThreadSearchMetadata(
 
 export function ThreadProvider({ children }: { children: ReactNode }) {
   const [apiUrl] = useQueryState("apiUrl") || [process.env.NEXT_PUBLIC_API_URL];
-  const [assistantId] = useQueryState("assistantId") || [process.env.NEXT_PUBLIC_ASSISTANT_ID];
+  const [assistantId] = useQueryState("assistantId") || [
+    process.env.NEXT_PUBLIC_ASSISTANT_ID,
+  ];
   const [threads, setThreads] = useState<Thread[]>([]);
   const [threadsLoading, setThreadsLoading] = useState(false);
   const [userId, setUserId, _removeUserId] = useLocalStorage("userId", "");
-  
+
   const getThreads = useCallback(async (): Promise<Thread[]> => {
     const envApiUrl = apiUrl || process.env.NEXT_PUBLIC_API_URL;
     const envAssistantId = assistantId || process.env.NEXT_PUBLIC_ASSISTANT_ID;

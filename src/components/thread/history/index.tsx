@@ -85,7 +85,7 @@ export default function ThreadHistory() {
 
   const { getThreads, threads, setThreads, threadsLoading, setThreadsLoading } =
     useThreads();
-  
+
   const { signOut, user } = useAuth();
 
   const handleSignOut = async () => {
@@ -116,9 +116,7 @@ export default function ThreadHistory() {
               <PanelRightClose className="size-5" />
             )}
           </Button>
-          <h1 className="text-lg font-semibold tracking-tight">
-            대화 내역
-          </h1>
+          <h1 className="text-lg font-semibold tracking-tight">대화 내역</h1>
         </div>
         {threadsLoading ? (
           <ThreadHistoryLoading />
@@ -127,8 +125,8 @@ export default function ThreadHistory() {
         )}
         <div className="mt-auto px-4 pb-4">
           <div className="flex items-center gap-8 border-t pt-4">
-            <div className="flex-1 min-w-0 bg-white">
-              <p className="text-sm font-medium text-gray-900 truncate">
+            <div className="min-w-0 flex-1 bg-white">
+              <p className="truncate text-sm font-medium text-gray-900">
                 {user?.email}
               </p>
             </div>
@@ -136,13 +134,13 @@ export default function ThreadHistory() {
               variant="outline"
               size="sm"
               onClick={handleSignOut}
-              className="flex items-center gap-2 shrink-0"
+              className="flex shrink-0 items-center gap-2"
             >
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">로그아웃</span>
             </Button>
           </div>
-          <div className="text-center text-xs text-gray-400 mt-2">
+          <div className="mt-2 text-center text-xs text-gray-400">
             © 2025 HyperPipe
           </div>
         </div>
@@ -168,8 +166,8 @@ export default function ThreadHistory() {
             />
             <div className="mt-auto px-4 pb-4">
               <div className="flex items-center gap-4 border-t pt-4">
-                <div className="flex-1 min-w-0 bg-white">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                <div className="min-w-0 flex-1 bg-white">
+                  <p className="truncate text-sm font-medium text-gray-900">
                     {user?.email}
                   </p>
                 </div>
@@ -177,13 +175,13 @@ export default function ThreadHistory() {
                   variant="outline"
                   size="sm"
                   onClick={handleSignOut}
-                  className="flex items-center gap-2 shrink-0"
+                  className="flex shrink-0 items-center gap-2"
                 >
                   <LogOut className="h-4 w-4" />
                   <span className="hidden sm:inline">로그아웃</span>
                 </Button>
               </div>
-              <div className="text-center text-xs text-gray-400 mt-2">
+              <div className="mt-2 text-center text-xs text-gray-400">
                 © 2025 HyperPipe
               </div>
             </div>

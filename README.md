@@ -53,9 +53,6 @@ pnpm start:prod
 pnpm stop:prod
 ```
 
-
-
-
 앱은 `http://localhost:3000`에서 사용할 수 있습니다.
 
 ## 💁 사용법

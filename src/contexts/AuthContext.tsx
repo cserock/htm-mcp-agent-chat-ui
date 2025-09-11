@@ -1,15 +1,24 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, username: string, phone: string, classOf: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ data: any; error: any }>;
+  signUp: (
+    email: string,
+    password: string,
+    username: string,
+    phone: string,
+    classOf: string,
+  ) => Promise<{ error: any }>;
+  signIn: (
+    email: string,
+    password: string,
+  ) => Promise<{ data: any; error: any }>;
   signOut: () => Promise<void>;
   checkUserApproval: (userId: string) => Promise<boolean>;
 }
@@ -41,7 +50,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, username: string, phone: string, class_of: string) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    username: string,
+    phone: string,
+    class_of: string,
+  ) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -49,9 +64,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: {
           phone: phone,
           username: username,
-          class_of: class_of
-        }
-      }
+          class_of: class_of,
+        },
+      },
     });
 
     // supabase function으로 아래 코드 대체
@@ -91,21 +106,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkUserApproval = async (userId: string): Promise<boolean> => {
     try {
-      if (userId === '') return false;
+      if (userId === "") return false;
       const { data, error } = await supabase
-        .from('user_info')
-        .select('is_approved')
-        .eq('id', userId)
+        .from("user_info")
+        .select("is_approved")
+        .eq("id", userId)
         .single();
 
       if (error) {
-        console.error('Error checking user approval:', error);
+        console.error("Error checking user approval:", error);
         return false;
       }
 
       return data?.is_approved === true;
     } catch (error) {
-      console.error('Error checking user approval:', error);
+      console.error("Error checking user approval:", error);
       return false;
     }
   };
@@ -126,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
