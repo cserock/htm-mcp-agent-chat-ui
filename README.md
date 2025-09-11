@@ -10,6 +10,7 @@
 - .env 에서 로고 이미지, 타이틀 설정 가능
 - Vision Model 을 위한 이미지 파일 업로드 기능 추가
 - 사용자 별 쓰레드 구분 (LocalStorage 로 UserID 관리)
+- **Supabase 인증 시스템 추가** (회원가입, 로그인, 로그아웃)
 
 ## 설정
 
@@ -99,4 +100,33 @@ NEXT_PUBLIC_APP_NAME=teddynote LAB
 # 앱 로고
 NEXT_PUBLIC_APP_LOGO=/teddynote-logo.png
 LANGSMITH_API_KEY=
+
+# Supabase 설정 (필수)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 ```
+
+## 🔐 Supabase 인증 설정
+
+이 애플리케이션은 Supabase를 사용하여 사용자 인증을 처리합니다.
+
+### 1. Supabase 프로젝트 생성
+
+1. [Supabase](https://supabase.com)에 가입하고 새 프로젝트를 생성하세요
+2. 프로젝트 설정에서 API URL과 anon key를 복사하세요
+
+### 2. 환경 변수 설정
+
+`.env.local` 파일을 생성하고 다음 내용을 추가하세요:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+```
+
+### 3. 인증 기능
+
+- **회원가입**: 새 계정을 생성할 수 있습니다
+- **로그인**: 기존 계정으로 로그인할 수 있습니다
+- **로그아웃**: 현재 세션을 종료합니다
+- **자동 리다이렉트**: 로그인하지 않은 사용자는 자동으로 `/auth` 페이지로 이동합니다

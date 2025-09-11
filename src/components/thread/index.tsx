@@ -250,7 +250,7 @@ export function Thread() {
       </div>
       <motion.div
         className={cn(
-          "relative flex min-w-0 flex-1 flex-col overflow-hidden",
+          "relative flex min-w-0 flex-1 flex-col overflow-hidden bg-white",
           !chatStarted && "grid-rows-[1fr]",
         )}
         layout={isLargeScreen}
@@ -351,7 +351,7 @@ export function Thread() {
           </div>
         )}
 
-        <StickToBottom className="relative flex-1 overflow-hidden">
+        <StickToBottom className="relative flex-1 overflow-hidden bg-white">
           <StickyToBottomContent
             className={cn(
               "absolute inset-0 overflow-y-scroll px-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent",
@@ -468,7 +468,7 @@ export function Thread() {
                           form?.requestSubmit();
                         }
                       }}
-                      placeholder="메시지를 입력해주세요..."
+                      placeholder="궁금한 점이 있다면 킹덤빌더스쿨 교재를 기반으로 답변해 드릴게요."
                       className="field-sizing-content resize-none border-none bg-transparent p-3.5 pb-0 shadow-none ring-0 outline-none focus:ring-0 focus:outline-none"
                     />
 

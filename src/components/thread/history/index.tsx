@@ -12,8 +12,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PanelRightOpen, PanelRightClose } from "lucide-react";
+import { PanelRightOpen, PanelRightClose, LogOut } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useAuth } from "@/contexts/AuthContext";
 
 function ThreadList({
   threads,
@@ -84,6 +85,12 @@ export default function ThreadHistory() {
 
   const { getThreads, threads, setThreads, threadsLoading, setThreadsLoading } =
     useThreads();
+  
+  const { signOut, user } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -109,7 +116,7 @@ export default function ThreadHistory() {
               <PanelRightClose className="size-5" />
             )}
           </Button>
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-lg font-semibold tracking-tight">
             대화 내역
           </h1>
         </div>
@@ -118,6 +125,27 @@ export default function ThreadHistory() {
         ) : (
           <ThreadList threads={threads} />
         )}
+        <div className="mt-auto px-4 pb-4">
+          <div className="flex items-center gap-8 border-t pt-4">
+            <div className="flex-1 min-w-0 bg-white">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {user?.email}
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSignOut}
+              className="flex items-center gap-2 shrink-0"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">로그아웃</span>
+            </Button>
+          </div>
+          <div className="text-center text-xs text-gray-400 mt-2">
+            © 2025 HyperPipe
+          </div>
+        </div>
       </div>
       <div className="lg:hidden">
         <Sheet
@@ -138,6 +166,27 @@ export default function ThreadHistory() {
               threads={threads}
               onThreadClick={() => setChatHistoryOpen((o) => !o)}
             />
+            <div className="mt-auto px-4 pb-4">
+              <div className="flex items-center gap-4 border-t pt-4">
+                <div className="flex-1 min-w-0 bg-white">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {user?.email}
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="flex items-center gap-2 shrink-0"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden sm:inline">로그아웃</span>
+                </Button>
+              </div>
+              <div className="text-center text-xs text-gray-400 mt-2">
+                © 2025 HyperPipe
+              </div>
+            </div>
           </SheetContent>
         </Sheet>
       </div>
