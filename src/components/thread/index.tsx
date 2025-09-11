@@ -330,7 +330,7 @@ export function Thread() {
                     height={32}
                   />
                 )}
-                <span className="text-xl font-semibold tracking-tight">
+                <span className="text-xl tracking-tight">
                   {process.env.NEXT_PUBLIC_APP_NAME ?? "Agent Chat"}
                 </span>
               </motion.button>
