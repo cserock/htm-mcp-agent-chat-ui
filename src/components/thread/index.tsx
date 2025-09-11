@@ -408,7 +408,7 @@ export function Thread() {
                     ) : (
                       <LangGraphLogoSVG className="h-8 flex-shrink-0" />
                     )}
-                    <h1 className="text-2xl font-semibold tracking-tight">
+                    <h1 className="text-2xl tracking-tight">
                       {process.env.NEXT_PUBLIC_APP_NAME ?? "Agent Chat"}
                     </h1>
                   </div>

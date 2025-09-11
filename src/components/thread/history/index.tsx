@@ -116,7 +116,7 @@ export default function ThreadHistory() {
               <PanelRightClose className="size-5" />
             )}
           </Button>
-          <h1 className="text-lg font-semibold tracking-tight">대화 내역</h1>
+          <h1 className="text-lg tracking-tight">대화 내역</h1>
         </div>
         {threadsLoading ? (
           <ThreadHistoryLoading />
