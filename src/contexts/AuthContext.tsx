@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, username: string, phone: string, class_of: string) => {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -54,24 +54,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    if (data.user && !error) {
-      // user_info 테이블에 사용자 정보 저장 (승인 대기 상태)
-      const { error: insertError } = await supabase
-        .from('user_info')
-        .insert({
-          user_id: data.user.id,
-          email: email,
-          username: username,
-          phone: phone,
-          class_of: class_of,
-          is_approved: false // 기본적으로 승인 대기 상태
-        });
+    // supabase function으로 아래 코드 대체
+    // if (data.user && !error) {
+    //   // user_info 테이블에 사용자 정보 저장 (승인 대기 상태)
+    //   const { error: insertError } = await supabase
+    //     .from('user_info')
+    //     .insert({
+    //       id: data.user.id,
+    //       email: email,
+    //       username: username,
+    //       phone: phone,
+    //       class_of: class_of,
+    //       is_approved: false // 기본적으로 승인 대기 상태
+    //     });
 
-      if (insertError) {
-        console.error('Error inserting user info:', insertError);
-        return { error: insertError };
-      }
-    }
+    //   if (insertError) {
+    //     console.error('Error inserting user info:', insertError);
+    //     return { error: insertError };
+    //   }
+    // }
 
     return { error };
   };

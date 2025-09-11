@@ -198,7 +198,7 @@ export default function AuthPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="find-phone">휴대폰 번호(예: 010-1234-5678)</Label>
+                                <Label htmlFor="find-phone">휴대폰 번호</Label>
                                 <Input
                                     id="find-phone"
                                     type="tel"
@@ -240,7 +240,8 @@ export default function AuthPage() {
                                     type="password"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
-                                    placeholder="변경할 비밀번호를 입력하세요"
+                                    placeholder="영문,숫자,특수문자 포함 8자 이상"
+                                    pattern="[a-zA-Z0-9!@#$%^&*]{8,}"
                                     required
                                 />
                             </div>
@@ -252,6 +253,7 @@ export default function AuthPage() {
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="변경할 비밀번호를 다시 입력하세요"
+                                    pattern="[a-zA-Z0-9!@#$%^&*]{8,}"
                                     required
                                 />
                             </div>
@@ -289,6 +291,7 @@ export default function AuthPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="이메일 주소를 입력하세요"
+                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                         required
                         />
                     </div>
@@ -324,7 +327,7 @@ export default function AuthPage() {
                                     });
                                 }
                             }}
-                            className="text-sm text-blue-600 hover:text-blue-800 underline"
+                            className="text-sm text-gray-400 hover:text-blue-800 underline"
                         >
                             비밀번호를 잊으셨나요?
                         </button>
@@ -332,7 +335,7 @@ export default function AuthPage() {
                             <button
                                 type="button"
                                 onClick={() => setIsFindEmailMode(true)}
-                                className="text-sm text-blue-600 hover:text-blue-800 underline"
+                                className="text-sm text-gray-400 hover:text-blue-800 underline"
                             >
                                 이메일 주소를 잊으셨나요?
                             </button>
@@ -351,6 +354,7 @@ export default function AuthPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="이메일 주소를 입력하세요"
+                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                         required
                         />
                     </div>
@@ -361,7 +365,8 @@ export default function AuthPage() {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="비밀번호를 입력하세요"
+                        placeholder="영문,숫자,특수문자 포함 8자 이상"
+                        pattern="[a-zA-Z0-9!@#$%^&*]{8,}"
                         required
                         />
                     </div>
@@ -389,13 +394,14 @@ export default function AuthPage() {
                             />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="signup-class-of">기수</Label>
+                        <Label htmlFor="signup-class-of">수료 기수</Label>
                         <Input
                         id="signup-class-of"
                         type="text"
                         value={class_of}
                         onChange={(e) => setClassOf(e.target.value)}
-                        placeholder="기수를 입력하세요 (예: 32)"
+                        placeholder="수료한 기수를 숫자만 입력하세요 (예: 32)"
+                        pattern="[0-9]{1,2}"
                         required
                         />
                     </div>
