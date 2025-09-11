@@ -16,6 +16,7 @@ import { LangGraphLogoSVG } from "../icons/langgraph";
 import { TooltipIconButton } from "./tooltip-icon-button";
 import {
   ArrowDown,
+  ArrowUp,
   LoaderCircle,
   PanelRightOpen,
   PanelRightClose,
@@ -519,7 +520,7 @@ export function Thread() {
                           className="shadow-md transition-all"
                           disabled={isLoading || !input.trim()}
                         >
-                          전송
+                          <ArrowUp className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
