@@ -15,20 +15,31 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   // 로그인 되어있고 승인되어있으면 메인페이지로 이동
   // 그렇지 않으면 로그아웃 후 로그인 페이지로 이동
   useEffect(() => {
-    if (!loading && user) {
-      const isApproved = async () => await checkUserApproval(user?.id || "");
-      isApproved().then((isApproved) => {
-        if (isApproved) {
-          router.push("/");
-        }
-      });
-    } else {
-      (async () => await signOut())();
-      router.push("/auth");
+    if (!loading) {
+      if (user) {
+        console.log("### 1 - User logged in, checking approval");
+        const isApproved = async () => await checkUserApproval(user?.id || "");
+        isApproved().then((isApproved) => {
+          if (isApproved) {
+            console.log("### User approved, staying on main page");
+            // 이미 메인 페이지에 있으면 리다이렉트하지 않음
+            if (window.location.pathname !== "/") {
+              router.push("/");
+            }
+          } else {
+            console.log("### User not approved, redirecting to auth");
+            router.push("/auth");
+          }
+        });
+      } else {
+        console.log("### 2 - No user, redirecting to auth");
+        router.push("/auth");
+      }
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, checkUserApproval]);
 
-  if (loading) {
+  // 로딩 중이거나 사용자가 없으면 로딩 화면 표시
+  if (loading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
@@ -37,10 +48,6 @@ export default function AuthGuard({ children }: AuthGuardProps) {
         </div>
       </div>
     );
-  }
-
-  if (!user) {
-    return null; // 리다이렉트가 진행 중
   }
 
   return <>{children}</>;
