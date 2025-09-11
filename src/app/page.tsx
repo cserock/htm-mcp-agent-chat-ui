@@ -5,9 +5,6 @@ import { StreamProvider } from "@/providers/Stream";
 import { ThreadProvider } from "@/providers/Thread";
 import { Toaster } from "@/components/ui/sonner";
 import AuthGuard from "@/components/AuthGuard";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
 import React from "react";
 
 export default function DemoPage(): React.ReactNode {

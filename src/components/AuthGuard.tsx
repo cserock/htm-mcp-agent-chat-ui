@@ -23,7 +23,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
         }
       });
     } else {
-      async () => await signOut();
+      (async () => await signOut())();
       router.push("/auth");
     }
   }, [user, loading, router]);
