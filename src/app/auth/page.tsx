@@ -9,9 +9,6 @@ import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
@@ -56,8 +53,10 @@ export default function AuthPage() {
         }
       });
     } else if (!loading && !user && !isResetMode) {
-      async () => await signOut();
-      router.push("/auth");
+      (async () => {
+        await signOut();
+        router.push("/auth");
+      })();
     }
   }, [user, loading, router, isResetMode]);
 
