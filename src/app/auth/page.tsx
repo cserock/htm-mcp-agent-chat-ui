@@ -181,7 +181,7 @@ export default function AuthPage() {
       <div className="w-full max-w-md space-y-8">
         <Toaster position="bottom-center" />
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-3xl text-gray-900">
             킹덤빌더스쿨 Q&A
           </h2>
         </div>
@@ -313,7 +313,8 @@ export default function AuthPage() {
                   <TabsTrigger value="signup">회원가입</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="signin">
+                <div className="mt-6">
+                  <TabsContent value="signin">
                   <form
                     onSubmit={handleSignIn}
                     className="space-y-4"
@@ -475,7 +476,8 @@ export default function AuthPage() {
                       {loading ? "회원가입 중..." : "회원가입"}
                     </Button>
                   </form>
-                </TabsContent>
+                  </TabsContent>
+                </div>
               </Tabs>
             )}
           </CardContent>
