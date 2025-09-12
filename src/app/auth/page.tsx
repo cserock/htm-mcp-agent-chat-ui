@@ -216,7 +216,14 @@ function AuthPageContent() {
       <div className="w-full max-w-md space-y-8">
         <Toaster position="bottom-center" />
         <div className="text-center">
-          <h2 className="mt-6 text-3xl text-gray-900">킹덤빌더스쿨 Q&A</h2>
+          <div className="flex items-center justify-center space-x-2">
+            <img
+                src={process.env.NEXT_PUBLIC_APP_LOGO}
+                alt={process.env.NEXT_PUBLIC_APP_NAME}
+                className="h-8 w-auto"
+            />
+            <h2 className="text-3xl text-gray-900">킹덤빌더스쿨 Q&A</h2>
+          </div>
         </div>
 
         <Card>
