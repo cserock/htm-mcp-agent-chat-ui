@@ -411,7 +411,7 @@ function AuthPageContent() {
                               // Supabase 비밀번호 재설정 이메일 전송
                               supabase.auth
                                 .resetPasswordForEmail(email, {
-                                  redirectTo: `${window.location.origin}/auth?reset=true`,
+                                  redirectTo: `${process.env.NEXT_PUBLIC_SERVER_HOST}/auth?reset=true`,
                                 })
                                 .then(({ error }) => {
                                   if (error) {
