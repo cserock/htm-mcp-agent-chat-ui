@@ -510,7 +510,7 @@ function AuthPageContent() {
                           type="tel"
                           value={class_of}
                           onChange={(e) => setClassOf(e.target.value)}
-                          placeholder="수료한 기수를 숫자만 입력하세요 (예: 32)"
+                          placeholder="최근 수료한 기수를 숫자로 입력하세요 (예: 32)"
                           pattern="[0-9]{1,2}"
                           required
                         />
