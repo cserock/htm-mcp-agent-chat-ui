@@ -32,6 +32,59 @@ function AuthPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  function getKoreanErrorMessage(error: any) {
+    if (!error) return "알 수 없는 오류가 발생했습니다.";
+
+    console.log(error.status);
+    console.log(error.message);
+
+    switch (error.status) {
+      case 400:
+        // Bad Request
+        if (error.message.includes("Password should be at least")) {
+          return "비밀번호는 최소 8자리여야 합니다.";
+        }
+
+        if (error.message.includes("Invalid login credentials")) {
+          return "로그인 정보가 올바르지 않습니다.";
+        }
+
+        if (error.message.includes("Email not confirmed")) {
+          return "이메일 인증이 완료되지 않았습니다. 이메일을 확인해주세요.";
+        }
+        return "잘못된 요청입니다.";
+
+      case 401:
+        // Unauthorized
+        if (error.message.includes("Invalid login credentials")) {
+          return "로그인 정보가 올바르지 않습니다.";
+        }
+        return "권한이 없습니다. 로그인 후 다시 시도해주세요.";
+
+      case 403:
+        return "권한이 없습니다.";
+
+      case 404:
+        return "찾을 수 없는 리소스입니다.";
+
+      case 409:
+        // Conflict (예: 이미 등록된 이메일)
+        if (error.message.includes("User already registered")) {
+          return "이미 등록된 사용자입니다.";
+        }
+        return "중복된 요청입니다.";
+
+      case 422:
+        return "입력값을 확인해주세요.";
+
+      case 500:
+        return "서버 에러가 발생했습니다. 잠시 후 다시 시도해주세요.";
+
+      default:
+        return error.message || "알 수 없는 오류가 발생했습니다.";
+    }
+  }
+
   // 비밀번호 재설정 모드 확인 및 세션 상태 체크
   useEffect(() => {
     const reset = searchParams.get("reset");
@@ -84,16 +137,23 @@ function AuthPageContent() {
     const { data, error } = await signIn(email, password);
 
     if (error) {
-      toast.error("로그인을 실패했습니다. (" + error.message + ")");
+      toast.error("로그인 실패", {
+        description: getKoreanErrorMessage(error),
+        duration: 5000,
+      });
     } else {
       const isApproved = await checkUserApproval(data.user.id);
       if (isApproved) {
-        // toast.success('로그인 성공!');
+        toast.success("로그인 성공", {
+          description: "환영합니다!",
+          duration: 3000,
+        });
         router.push("/");
       } else {
-        toast.error(
-          "아직 승인되지 않은 계정입니다. 승인 후 사용하실 수 있습니다.",
-        );
+        toast.error("계정 승인 필요", {
+          description: "아직 승인되지 않은 계정입니다. 승인 후 사용하실 수 있습니다.",
+          duration: 5000,
+        });
         // 승인되지 않은 경우 로그아웃
         await signOut();
         router.push("/auth");
@@ -110,12 +170,15 @@ function AuthPageContent() {
     const { error } = await signUp(email, password, username, phone, class_of);
 
     if (error) {
-      toast.error("회원가입이 실패했습니다. (" + error.message + ")");
+      toast.error("회원가입 실패", {
+        description: getKoreanErrorMessage(error),
+        duration: 5000,
+      });
     } else {
-      toast.success(
-        // "가입이 완료되었습니다. 입력하신 정보에 대해 승인 후 사용하실 수 있습니다.",
-        "가입이 완료되었습니다.\n이메일 인증 후 사용하실 수 있습니다.",
-      );
+      toast.success("회원가입 완료", {
+        description: "이메일 인증 후 사용하실 수 있습니다.",
+        duration: 4000,
+      });
 
       // 폼 초기화
       setEmail("");
@@ -136,13 +199,19 @@ function AuthPageContent() {
     setLoading(true);
 
     if (newPassword !== confirmPassword) {
-      toast.error("비밀번호가 일치하지 않습니다.");
+      toast.error("비밀번호 불일치", {
+        description: "비밀번호가 일치하지 않습니다.",
+        duration: 4000,
+      });
       setLoading(false);
       return;
     }
 
     if (newPassword.length < 8) {
-      toast.error("비밀번호는 최소 8자 이상이어야 합니다.");
+      toast.error("비밀번호 길이 부족", {
+        description: "비밀번호는 최소 8자 이상이어야 합니다.",
+        duration: 4000,
+      });
       setLoading(false);
       return;
     }
@@ -155,7 +224,10 @@ function AuthPageContent() {
       } = await supabase.auth.getSession();
 
       if (sessionError || !session) {
-        toast.error("세션이 만료되었습니다. 다시 시도해 주세요.");
+        toast.error("세션 만료", {
+          description: "세션이 만료되었습니다. 다시 시도해 주세요.",
+          duration: 5000,
+        });
         setIsResetMode(false);
         router.push("/auth");
         setLoading(false);
@@ -167,9 +239,15 @@ function AuthPageContent() {
       });
 
       if (error) {
-        toast.error("비밀번호 변경에 실패했습니다: " + error.message);
+        toast.error("비밀번호 변경 실패", {
+          description: getKoreanErrorMessage(error),
+          duration: 5000,
+        });
       } else {
-        toast.success("비밀번호가 성공적으로 변경되었습니다.");
+        toast.success("비밀번호 변경 완료", {
+          description: "비밀번호가 성공적으로 변경되었습니다.",
+          duration: 4000,
+        });
         setNewPassword("");
         setConfirmPassword("");
         setIsResetMode(false);
@@ -177,7 +255,10 @@ function AuthPageContent() {
         router.push("/auth");
       }
     } catch (error) {
-      toast.error("비밀번호 변경 중 오류가 발생했습니다.");
+      toast.error("시스템 오류", {
+        description: "비밀번호 변경 중 오류가 발생했습니다.",
+        duration: 5000,
+      });
     }
 
     setLoading(false);
@@ -197,16 +278,25 @@ function AuthPageContent() {
         .single();
 
       if (error || !data) {
-        toast.error("입력하신 정보와 일치하는 계정을 찾을 수 없습니다.");
+        toast.error("계정을 찾을 수 없음", {
+          description: "입력하신 정보와 일치하는 계정을 찾을 수 없습니다.",
+          duration: 4000,
+        });
       } else {
         const email = data.email;
         const maskedEmail = email
           ? email.replace(/(.{2}).*(@.*)/, "$1***$2")
           : "";
-        toast.success(`등록된 이메일: ${maskedEmail}`);
+        toast.success("이메일 찾기 완료", {
+          description: `등록된 이메일: ${maskedEmail}`,
+          duration: 5000,
+        });
       }
     } catch (error) {
-      toast.error("이메일 찾기 중 오류가 발생했습니다.");
+      toast.error("시스템 오류", {
+        description: "이메일 찾기 중 오류가 발생했습니다.",
+        duration: 5000,
+      });
     }
 
     setLoading(false);
@@ -423,14 +513,15 @@ function AuthPageContent() {
                                 })
                                 .then(({ error }) => {
                                   if (error) {
-                                    toast.error(
-                                      "이메일 전송에 실패했습니다: " +
-                                        error.message,
-                                    );
+                                    toast.error("이메일 전송 실패", {
+                                      description: getKoreanErrorMessage(error),
+                                      duration: 5000,
+                                    });
                                   } else {
-                                    toast.success(
-                                      "비밀번호 설정 링크를 메일로 전송했습니다.",
-                                    );
+                                    toast.success("이메일 전송 완료", {
+                                      description: "비밀번호 설정 링크를 메일로 전송했습니다.",
+                                      duration: 4000,
+                                    });
                                   }
                                 });
                             }
