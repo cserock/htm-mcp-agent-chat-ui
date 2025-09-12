@@ -27,35 +27,55 @@ function AuthPageContent() {
   const [isFindEmailMode, setIsFindEmailMode] = useState(false);
   const [findUsername, setFindUsername] = useState("");
   const [findPhone, setFindPhone] = useState("");
+  const [hasValidSession, setHasValidSession] = useState(true);
   const { signIn, signUp, signOut, user, checkUserApproval } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // 비밀번호 재설정 모드 확인
+  // 비밀번호 재설정 모드 확인 및 세션 상태 체크
   useEffect(() => {
     const reset = searchParams.get("reset");
+
+    console.log(reset);
     if (reset === "true") {
       setIsResetMode(true);
+      // 비밀번호 재설정 모드에서는 세션 상태를 확인
+      checkSessionForReset();
     }
   }, [searchParams]);
 
-  // 로그인 되어있고 승인되어있으면 메인페이지로 이동
-  // 그렇지 않으면 로그아웃 후 로그인 페이지로 이동
-  useEffect(() => {
-    if (!loading && user && !isResetMode) {
-      const isApproved = async () => await checkUserApproval(user?.id || "");
-      isApproved().then((isApproved) => {
-        if (isApproved) {
-          router.push("/");
-        }
-      });
-    } else if (!loading && !user && !isResetMode) {
-      (async () => {
-        await signOut();
-        router.push("/auth");
-      })();
+  const checkSessionForReset = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      setHasValidSession(false);
+      toast.error("세션이 만료되었습니다. 다시 로그인해주세요.");
+    } else {
+      setHasValidSession(true);
     }
-  }, [user, loading, router, isResetMode]);
+  };
+
+  useEffect(() => {
+    if (!loading) {
+      if (user && !isResetMode) {
+        console.log("### 1 - User logged in, checking approval");
+        const isApproved = async () => await checkUserApproval(user?.id || "");
+        isApproved().then((isApproved) => {
+          if (isApproved) {
+            console.log("### User approved, staying on main page");
+            // 이미 메인 페이지에 있으면 리다이렉트하지 않음
+            if (window.location.pathname !== "/") {
+              router.push("/");
+            }
+          } else {
+            console.log("### User not approved, redirecting to auth");
+            router.push("/auth");
+          }
+        });
+      }
+    }
+  }, [user, loading, router, isResetMode, checkUserApproval]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,13 +140,27 @@ function AuthPageContent() {
       return;
     }
 
-    if (newPassword.length < 6) {
-      toast.error("비밀번호는 최소 6자 이상이어야 합니다.");
+    if (newPassword.length < 8) {
+      toast.error("비밀번호는 최소 8자 이상이어야 합니다.");
       setLoading(false);
       return;
     }
 
     try {
+      // 세션 상태를 다시 한번 확인
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError || !session) {
+        toast.error("세션이 만료되었습니다. 다시 시도해 주세요.");
+        setIsResetMode(false);
+        router.push("/auth");
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase.auth.updateUser({
         password: newPassword,
       });
@@ -138,6 +172,7 @@ function AuthPageContent() {
         setNewPassword("");
         setConfirmPassword("");
         setIsResetMode(false);
+        await signOut();
         router.push("/auth");
       }
     } catch (error) {
@@ -181,9 +216,7 @@ function AuthPageContent() {
       <div className="w-full max-w-md space-y-8">
         <Toaster position="bottom-center" />
         <div className="text-center">
-          <h2 className="mt-6 text-3xl text-gray-900">
-            킹덤빌더스쿨 Q&A
-          </h2>
+          <h2 className="mt-6 text-3xl text-gray-900">킹덤빌더스쿨 Q&A</h2>
         </div>
 
         <Card>
@@ -217,8 +250,8 @@ function AuthPageContent() {
                       type="tel"
                       value={findPhone}
                       onChange={(e) => setFindPhone(e.target.value)}
-                      placeholder="가입시 입력한 휴대폰번호를 입력하세요 (예: 010-1234-5678)"
-                      pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}"
+                      placeholder="가입시 입력한 휴대폰번호를 입력하세요 (예: 01012345678)"
+                      pattern="[0-9]{11}"
                       required
                     />
                   </div>
@@ -251,56 +284,74 @@ function AuthPageContent() {
                     비밀번호 재설정
                   </h3>
                 </div>
-                <form
-                  onSubmit={handlePasswordReset}
-                  className="space-y-4"
-                >
-                  <div className="space-y-2">
-                    <Label htmlFor="new-password">변경할 비밀번호</Label>
-                    <Input
-                      id="new-password"
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="영문,숫자,특수문자 포함 8자 이상"
-                      pattern="[a-zA-Z0-9!@#$%^&*]{8,}"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-password">
-                      변경할 비밀번호 확인
-                    </Label>
-                    <Input
-                      id="confirm-password"
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="변경할 비밀번호를 다시 입력하세요"
-                      pattern="[a-zA-Z0-9!@#$%^&*]{8,}"
-                      required
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={loading}
-                  >
-                    {loading ? "재설정 중..." : "비밀번호 재설정"}
-                  </Button>
-                  <div className="text-center">
-                    <button
-                      type="button"
+                {!hasValidSession ? (
+                  <div className="space-y-4 text-center">
+                    <p className="text-red-600">
+                      비밀번호 재설정 링크가 유효하지 않거나 만료되었습니다.
+                    </p>
+                    <Button
                       onClick={() => {
                         setIsResetMode(false);
+                        setHasValidSession(true);
                         router.push("/auth");
                       }}
-                      className="text-sm text-gray-600 underline hover:text-gray-800"
+                      className="w-full"
                     >
                       로그인 페이지로 돌아가기
-                    </button>
+                    </Button>
                   </div>
-                </form>
+                ) : (
+                  <form
+                    onSubmit={handlePasswordReset}
+                    className="space-y-4"
+                  >
+                    <div className="space-y-2">
+                      <Label htmlFor="new-password">변경할 비밀번호</Label>
+                      <Input
+                        id="new-password"
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="영문,숫자,특수문자 포함 8자 이상"
+                        pattern="[a-zA-Z0-9!@#$%^&*]{8,}"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm-password">
+                        변경할 비밀번호 확인
+                      </Label>
+                      <Input
+                        id="confirm-password"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="변경할 비밀번호를 다시 입력하세요"
+                        pattern="[a-zA-Z0-9!@#$%^&*]{8,}"
+                        required
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={loading}
+                    >
+                      {loading ? "재설정 중..." : "비밀번호 재설정"}
+                    </Button>
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsResetMode(false);
+                          router.push("/auth");
+                        }}
+                        className="text-sm text-gray-600 underline hover:text-gray-800"
+                      >
+                        로그인 페이지로 돌아가기
+                      </button>
+                    </div>
+                  </form>
+                )}
               </div>
             ) : (
               <Tabs
@@ -315,149 +366,149 @@ function AuthPageContent() {
 
                 <div className="mt-6">
                   <TabsContent value="signin">
-                  <form
-                    onSubmit={handleSignIn}
-                    className="space-y-4"
-                  >
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-email">이메일 주소</Label>
-                      <Input
-                        id="signin-email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="이메일 주소를 입력하세요"
-                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-password">비밀번호</Label>
-                      <Input
-                        id="signin-password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="비밀번호를 입력하세요"
-                        required
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={loading}
+                    <form
+                      onSubmit={handleSignIn}
+                      className="space-y-4"
                     >
-                      {loading ? "로그인 중..." : "로그인"}
-                    </Button>
-                    <div className="text-center">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const email = prompt(
-                            "가입하신 이메일 주소를 입력해 주세요.\n새 비밀번호를 생성할 수 있는 링크를 보내드립니다.",
-                          );
-                          if (email) {
-                            // Supabase 비밀번호 재설정 이메일 전송
-                            supabase.auth
-                              .resetPasswordForEmail(email, {
-                                redirectTo: `${window.location.origin}/auth?reset=true`,
-                              })
-                              .then(({ error }) => {
-                                if (error) {
-                                  toast.error(
-                                    "이메일 전송에 실패했습니다: " +
-                                      error.message,
-                                  );
-                                } else {
-                                  toast.success(
-                                    "비밀번호 설정 링크를 메일로 전송했습니다.",
-                                  );
-                                }
-                              });
-                          }
-                        }}
-                        className="text-sm text-gray-400 underline hover:text-blue-800"
+                      <div className="space-y-2">
+                        <Label htmlFor="signin-email">이메일 주소</Label>
+                        <Input
+                          id="signin-email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="이메일 주소를 입력하세요"
+                          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signin-password">비밀번호</Label>
+                        <Input
+                          id="signin-password"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="비밀번호를 입력하세요"
+                          required
+                        />
+                      </div>
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={loading}
                       >
-                        비밀번호를 잊으셨나요?
-                      </button>
+                        {loading ? "로그인 중..." : "로그인"}
+                      </Button>
                       <div className="text-center">
                         <button
                           type="button"
-                          onClick={() => setIsFindEmailMode(true)}
+                          onClick={() => {
+                            const email = prompt(
+                              "가입하신 이메일 주소를 입력해 주세요.\n새 비밀번호를 생성할 수 있는 링크를 보내드립니다.",
+                            );
+                            if (email) {
+                              // Supabase 비밀번호 재설정 이메일 전송
+                              supabase.auth
+                                .resetPasswordForEmail(email, {
+                                  redirectTo: `${window.location.origin}/auth?reset=true`,
+                                })
+                                .then(({ error }) => {
+                                  if (error) {
+                                    toast.error(
+                                      "이메일 전송에 실패했습니다: " +
+                                        error.message,
+                                    );
+                                  } else {
+                                    toast.success(
+                                      "비밀번호 설정 링크를 메일로 전송했습니다.",
+                                    );
+                                  }
+                                });
+                            }
+                          }}
                           className="text-sm text-gray-400 underline hover:text-blue-800"
                         >
-                          이메일 주소를 잊으셨나요?
+                          비밀번호를 잊으셨나요?
                         </button>
+                        <div className="text-center">
+                          <button
+                            type="button"
+                            onClick={() => setIsFindEmailMode(true)}
+                            className="text-sm text-gray-400 underline hover:text-blue-800"
+                          >
+                            이메일 주소를 잊으셨나요?
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </form>
-                </TabsContent>
+                    </form>
+                  </TabsContent>
 
-                <TabsContent value="signup">
-                  <form
-                    onSubmit={handleSignUp}
-                    className="space-y-4"
-                  >
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email">이메일 주소</Label>
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="이메일 주소를 입력하세요"
-                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password">비밀번호</Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="영문,숫자,특수문자 포함 8자 이상"
-                        pattern="[a-zA-Z0-9!@#$%^&*]{8,}"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-username">이름</Label>
-                      <Input
-                        id="signup-username"
-                        type="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        placeholder="이름을 입력하세요"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-phone">휴대폰 번호</Label>
-                      <Input
-                        id="signup-phone"
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="휴대폰 번호를 입력하세요 (예: 010-1234-5678)"
-                        pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-class-of">수료 기수</Label>
-                      <Input
-                        id="signup-class-of"
-                        type="text"
-                        value={class_of}
-                        onChange={(e) => setClassOf(e.target.value)}
-                        placeholder="수료한 기수를 숫자만 입력하세요 (예: 32)"
-                        pattern="[0-9]{1,2}"
-                        required
-                      />
-                    </div>
-                    {/* <div className="space-y-2">
+                  <TabsContent value="signup">
+                    <form
+                      onSubmit={handleSignUp}
+                      className="space-y-4"
+                    >
+                      <div className="space-y-2">
+                        <Label htmlFor="signup-email">이메일 주소</Label>
+                        <Input
+                          id="signup-email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="이메일 주소를 입력하세요"
+                          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signup-password">비밀번호</Label>
+                        <Input
+                          id="signup-password"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="영문,숫자,특수문자 포함 8자 이상"
+                          pattern="[a-zA-Z0-9!@#$%^&*]{8,}"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signup-username">이름</Label>
+                        <Input
+                          id="signup-username"
+                          type="username"
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          placeholder="이름을 입력하세요"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signup-phone">휴대폰 번호</Label>
+                        <Input
+                          id="signup-phone"
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="숫자만 입력하세요 (예: 01012345678)"
+                          pattern="[0-9]{11}"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signup-class-of">수료 기수</Label>
+                        <Input
+                          id="signup-class-of"
+                          type="tel"
+                          value={class_of}
+                          onChange={(e) => setClassOf(e.target.value)}
+                          placeholder="수료한 기수를 숫자만 입력하세요 (예: 32)"
+                          pattern="[0-9]{1,2}"
+                          required
+                        />
+                      </div>
+                      {/* <div className="space-y-2">
                         <Label htmlFor="signup-group-name">조이름</Label>
                         <Input
                         id="signup-group-name"
@@ -468,14 +519,14 @@ function AuthPageContent() {
                         required
                         />
                     </div> */}
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={loading}
-                    >
-                      {loading ? "회원가입 중..." : "회원가입"}
-                    </Button>
-                  </form>
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={loading}
+                      >
+                        {loading ? "회원가입 중..." : "회원가입"}
+                      </Button>
+                    </form>
                   </TabsContent>
                 </div>
               </Tabs>
@@ -492,7 +543,13 @@ function AuthPageContent() {
 
 export default function AuthPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">로딩 중...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          로딩 중...
+        </div>
+      }
+    >
       <AuthPageContent />
     </Suspense>
   );
