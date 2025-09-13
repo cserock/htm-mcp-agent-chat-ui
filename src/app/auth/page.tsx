@@ -459,7 +459,7 @@ function AuthPageContent() {
               >
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="signin">로그인</TabsTrigger>
-                  <TabsTrigger value="signup">회원가입</TabsTrigger>
+                  <TabsTrigger value="signup" disabled>회원가입</TabsTrigger>
                 </TabsList>
 
                 <div className="mt-6">
