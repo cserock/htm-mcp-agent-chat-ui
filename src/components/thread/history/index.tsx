@@ -141,7 +141,7 @@ export default function ThreadHistory() {
             </Button>
           </div>
           <div className="mt-2 text-center text-xs text-gray-400">
-            © 2025 HyperPipe
+            © 2025 <a href="https://hyperpipe.kr?utm_source=kbs&utm_medium=history" target="_blank" rel="noopener noreferrer">HyperPipe</a>
           </div>
         </div>
       </div>
@@ -182,7 +182,7 @@ export default function ThreadHistory() {
                 </Button>
               </div>
               <div className="mt-2 text-center text-xs text-gray-400">
-                © 2025 HyperPipe
+                © 2025 <a href="https://hyperpipe.kr?utm_source=kbs&utm_medium=history" target="_blank" rel="noopener noreferrer">HyperPipe</a>
               </div>
             </div>
           </SheetContent>

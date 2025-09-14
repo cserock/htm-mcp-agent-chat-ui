@@ -633,7 +633,7 @@ function AuthPageContent() {
           </CardContent>
         </Card>
         <div className="mt-4 text-center text-sm text-gray-500">
-          © 2025 HyperPipe
+          © 2025 <a href="https://hyperpipe.kr?utm_source=kbs&utm_medium=auth" target="_blank" rel="noopener noreferrer">HyperPipe</a>
         </div>
       </div>
     </div>
