@@ -155,7 +155,8 @@ function AuthPageContent() {
         router.push("/");
       } else {
         toast.error("계정 승인 필요", {
-          description: "아직 승인되지 않은 계정입니다. 승인 후 사용하실 수 있습니다.",
+          description:
+            "아직 승인되지 않은 계정입니다. 승인 후 사용하실 수 있습니다.",
           duration: 5000,
         });
         // 승인되지 않은 경우 로그아웃
@@ -537,7 +538,8 @@ function AuthPageContent() {
                                     });
                                   } else {
                                     toast.success("이메일 전송 완료", {
-                                      description: "비밀번호 설정 링크를 메일로 전송했습니다.",
+                                      description:
+                                        "비밀번호 설정 링크를 메일로 전송했습니다.",
                                       duration: 4000,
                                     });
                                   }
@@ -640,7 +642,7 @@ function AuthPageContent() {
                                 setAgreePrivacy(checked);
                                 setAgreeAge(checked);
                               }}
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="text-sm font-medium text-gray-900">
                               전체 동의
@@ -648,7 +650,7 @@ function AuthPageContent() {
                           </label>
                         </div>
 
-                        <div className="space-y-2 ml-6">
+                        <div className="ml-6 space-y-2">
                           <label className="flex items-center space-x-2">
                             <input
                               type="checkbox"
@@ -661,13 +663,13 @@ function AuthPageContent() {
                                   setAgreeAll(true);
                                 }
                               }}
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="text-sm text-gray-700">
                               [필수]&nbsp;만 14세 이상입니다
                             </span>
                           </label>
-                          
+
                           <label className="flex items-center space-x-2">
                             <input
                               type="checkbox"
@@ -680,16 +682,22 @@ function AuthPageContent() {
                                   setAgreeAll(true);
                                 }
                               }}
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="text-sm text-gray-700">
-                            [필수]&nbsp;
-                              <a href="https://www.heavenlytouch.kr/%EC%9D%B4%EC%9A%A9%EC%95%BD%EA%B4%80/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800 underline">
+                              [필수]&nbsp;
+                              <a
+                                href="https://www.heavenlytouch.kr/%EC%9D%B4%EC%9A%A9%EC%95%BD%EA%B4%80/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-600 underline hover:text-gray-800"
+                              >
                                 이용약관
-                              </a> 동의
+                              </a>{" "}
+                              동의
                             </span>
                           </label>
-                          
+
                           <label className="flex items-center space-x-2">
                             <input
                               type="checkbox"
@@ -702,13 +710,19 @@ function AuthPageContent() {
                                   setAgreeAll(true);
                                 }
                               }}
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="text-sm text-gray-700">
-                            [필수]&nbsp;
-                              <a href="https://www.heavenlytouch.kr/%EC%9D%B4%EC%9A%A9%EC%95%BD%EA%B4%80/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800 underline">
-                              개인정보 수집 및 이용
-                              </a> 동의
+                              [필수]&nbsp;
+                              <a
+                                href="https://www.heavenlytouch.kr/%EC%9D%B4%EC%9A%A9%EC%95%BD%EA%B4%80/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-600 underline hover:text-gray-800"
+                              >
+                                개인정보 수집 및 이용
+                              </a>{" "}
+                              동의
                             </span>
                           </label>
                         </div>
@@ -740,7 +754,14 @@ function AuthPageContent() {
           </CardContent>
         </Card>
         <div className="mt-4 text-center text-sm text-gray-500">
-          © 2025 <a href="https://hyperpipe.kr?utm_source=kbs&utm_medium=auth" target="_blank" rel="noopener noreferrer">HyperPipe</a>
+          © 2025{" "}
+          <a
+            href="https://hyperpipe.kr?utm_source=kbs&utm_medium=auth"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            HyperPipe
+          </a>
         </div>
       </div>
     </div>

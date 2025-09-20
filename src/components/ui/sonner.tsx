@@ -6,8 +6,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{
-        __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
           [data-sonner-toast][data-type="success"] {
             background-color: rgb(240 253 244) !important;
             border-color: rgb(187 247 208) !important;
@@ -90,8 +91,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
               color: rgb(147 197 253) !important;
             }
           }
-        `
-      }} />
+        `,
+        }}
+      />
       <Sonner
         theme={theme as ToasterProps["theme"]}
         className="toaster group"

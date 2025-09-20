@@ -20,7 +20,13 @@ import { toast } from "sonner";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
 
 // UserProfileDropdown 컴포넌트
-function UserProfileDropdown({ user, className = "" }: { user: any; className?: string }) {
+function UserProfileDropdown({
+  user,
+  className = "",
+}: {
+  user: any;
+  className?: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { signOut } = useAuth();
@@ -28,7 +34,10 @@ function UserProfileDropdown({ user, className = "" }: { user: any; className?: 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -57,7 +66,7 @@ function UserProfileDropdown({ user, className = "" }: { user: any; className?: 
   const handleLeave = async () => {
     // 회원 탈퇴 확인
     const confirmed = window.confirm(
-      "회원 탈퇴를 하시겠습니까?\n탈퇴시 모든 데이터가 삭제되며 복구할 수 없습니다.\n탈퇴를 원하시면 '확인'을 눌러주세요."
+      "회원 탈퇴를 하시겠습니까?\n탈퇴시 모든 데이터가 삭제되며 복구할 수 없습니다.\n탈퇴를 원하시면 '확인'을 눌러주세요.",
     );
 
     if (!confirmed) {
@@ -70,7 +79,7 @@ function UserProfileDropdown({ user, className = "" }: { user: any; className?: 
         console.error("사용자 정보 삭제 오류:", error);
         // user_info 삭제 실패해도 계속 진행
       }
-      
+
       // 3. 로그아웃 처리
       await signOut();
 
@@ -84,14 +93,14 @@ function UserProfileDropdown({ user, className = "" }: { user: any; className?: 
       setTimeout(() => {
         window.location.href = "/auth";
       }, 2000);
-
     } catch (error: any) {
       console.error("회원 탈퇴 오류:", error);
       toast.error("회원 탈퇴 실패", {
-        description: "회원 탈퇴 중 오류가 발생했습니다. 이용 문의를 통해 문의해주세요.",
+        description:
+          "회원 탈퇴 중 오류가 발생했습니다. 이용 문의를 통해 문의해주세요.",
         duration: 5000,
       });
-      
+
       // 로그아웃은 시도
       // try {
       //   await signOut();
@@ -117,34 +126,37 @@ function UserProfileDropdown({ user, className = "" }: { user: any; className?: 
 
     // mailto 링크 생성
     const mailtoLink = `mailto:${supportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
+
     // 이메일 클라이언트 열기
-    window.open(mailtoLink, '_blank');
-    
+    window.open(mailtoLink, "_blank");
+
     setIsOpen(false);
   };
 
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
+    <div
+      className={`relative ${className}`}
+      ref={dropdownRef}
+    >
       {/* 사용자 프로필 버튼 */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 w-full min-w-0"
+        className="flex w-full min-w-0 items-center space-x-3 rounded-lg p-2 transition-colors duration-200 hover:bg-gray-100"
       >
         <Avatar className="h-8 w-8">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-            {user?.user_metadata?.username?.charAt(0)?.toUpperCase() || 
-             user?.email?.charAt(0)?.toUpperCase() || 
-             "U"}
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-sm font-semibold text-white">
+            {user?.user_metadata?.username?.charAt(0)?.toUpperCase() ||
+              user?.email?.charAt(0)?.toUpperCase() ||
+              "U"}
           </div>
         </Avatar>
-        <div className="text-left flex-1 min-w-0">
-          <div className="text-sm font-medium text-gray-900 truncate">
+        <div className="min-w-0 flex-1 text-left">
+          <div className="truncate text-sm font-medium text-gray-900">
             {user?.user_metadata?.username || "사용자"}
           </div>
         </div>
         <svg
-          className={`w-4 h-4 text-gray-400 transition-transform duration-200 flex-shrink-0 ${
+          className={`h-4 w-4 flex-shrink-0 text-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
           }`}
           fill="none"
@@ -162,11 +174,11 @@ function UserProfileDropdown({ user, className = "" }: { user: any; className?: 
 
       {/* 드롭다운 메뉴 */}
       {isOpen && (
-        <div className="absolute right-0 bottom-full mb-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+        <div className="absolute right-0 bottom-full z-50 mb-2 w-64 rounded-lg border border-gray-200 bg-white py-2 shadow-lg">
           {/* 상단 사용자 정보 */}
-          <div className="px-4 py-2 bg-gray-50 rounded-t-lg">
+          <div className="rounded-t-lg bg-gray-50 px-4 py-2">
             <div className="flex items-center space-x-3">
-              <div className="text-sm font-medium text-gray-700 truncate">
+              <div className="truncate text-sm font-medium text-gray-700">
                 {user?.email}
               </div>
             </div>
@@ -176,21 +188,21 @@ function UserProfileDropdown({ user, className = "" }: { user: any; className?: 
           <div className="py-1">
             <button
               onClick={handleSupport}
-              className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between"
+              className="flex w-full items-center justify-between px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
             >
               <span>이용 문의</span>
             </button>
-            
+
             <button
               onClick={handleLeave}
-              className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between"
+              className="flex w-full items-center justify-between px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
             >
               <span>회원 탈퇴</span>
               <span className="text-xs text-gray-400">⌘,</span>
             </button>
-            
-            <div className="border-t border-gray-100 my-1"></div>
-            
+
+            <div className="my-1 border-t border-gray-100"></div>
+
             <button
               onClick={handleLogout}
               className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
@@ -308,11 +320,18 @@ export default function ThreadHistory() {
           <ThreadList threads={threads} />
         )}
         <div className="mt-auto w-full px-4 pb-4">
-          <div className="border-t pt-4 w-full">
+          <div className="w-full border-t pt-4">
             <UserProfileDropdown user={user} />
           </div>
-          <div className="mt-2 text-center text-xs text-gray-400 w-full">
-            © 2025 <a href="https://hyperpipe.kr?utm_source=kbs&utm_medium=history" target="_blank" rel="noopener noreferrer">HyperPipe</a>
+          <div className="mt-2 w-full text-center text-xs text-gray-400">
+            © 2025{" "}
+            <a
+              href="https://hyperpipe.kr?utm_source=kbs&utm_medium=history"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              HyperPipe
+            </a>
           </div>
         </div>
       </div>
@@ -340,7 +359,14 @@ export default function ThreadHistory() {
                 <UserProfileDropdown user={user} />
               </div>
               <div className="mt-2 text-center text-xs text-gray-400">
-                © 2025 <a href="https://hyperpipe.kr?utm_source=kbs&utm_medium=history" target="_blank" rel="noopener noreferrer">HyperPipe</a>
+                © 2025{" "}
+                <a
+                  href="https://hyperpipe.kr?utm_source=kbs&utm_medium=history"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  HyperPipe
+                </a>
               </div>
             </div>
           </SheetContent>
