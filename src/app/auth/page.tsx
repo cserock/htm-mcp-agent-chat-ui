@@ -28,6 +28,10 @@ function AuthPageContent() {
   const [findUsername, setFindUsername] = useState("");
   const [findPhone, setFindPhone] = useState("");
   const [hasValidSession, setHasValidSession] = useState(true);
+  const [agreeAll, setAgreeAll] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [agreeAge, setAgreeAge] = useState(false);
   const { signIn, signUp, signOut, user, checkUserApproval } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -167,6 +171,16 @@ function AuthPageContent() {
     e.preventDefault();
     setLoading(true);
 
+    // 동의 체크 검증
+    if (!agreeTerms || !agreePrivacy || !agreeAge) {
+      toast.error("약관 동의 필요", {
+        description: "모든 필수 약관에 동의해주세요.",
+        duration: 4000,
+      });
+      setLoading(false);
+      return;
+    }
+
     const { error } = await signUp(email, password, username, phone, class_of);
 
     if (error) {
@@ -186,6 +200,10 @@ function AuthPageContent() {
       setUsername("");
       setPhone("");
       setClassOf("");
+      setAgreeAll(false);
+      setAgreeTerms(false);
+      setAgreePrivacy(false);
+      setAgreeAge(false);
 
       // 로그인 탭으로 전환
       setActiveTab("signin");
@@ -459,7 +477,7 @@ function AuthPageContent() {
               >
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="signin">로그인</TabsTrigger>
-                  <TabsTrigger value="signup" disabled>회원가입</TabsTrigger>
+                  <TabsTrigger value="signup">회원가입</TabsTrigger>
                 </TabsList>
 
                 <div className="mt-6">
@@ -607,6 +625,95 @@ function AuthPageContent() {
                           required
                         />
                       </div>
+
+                      {/* 약관 동의 섹션 */}
+                      <div className="space-y-3 border-t pt-4">
+                        <div className="space-y-2">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              checked={agreeAll}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                setAgreeAll(checked);
+                                setAgreeTerms(checked);
+                                setAgreePrivacy(checked);
+                                setAgreeAge(checked);
+                              }}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <span className="text-sm font-medium text-gray-900">
+                              전체 동의
+                            </span>
+                          </label>
+                        </div>
+
+                        <div className="space-y-2 ml-6">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              checked={agreeAge}
+                              onChange={(e) => {
+                                setAgreeAge(e.target.checked);
+                                if (!e.target.checked) {
+                                  setAgreeAll(false);
+                                } else if (agreeTerms && agreePrivacy) {
+                                  setAgreeAll(true);
+                                }
+                              }}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <span className="text-sm text-gray-700">
+                              [필수]&nbsp;만 14세 이상입니다
+                            </span>
+                          </label>
+                          
+                          <label className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              checked={agreeTerms}
+                              onChange={(e) => {
+                                setAgreeTerms(e.target.checked);
+                                if (!e.target.checked) {
+                                  setAgreeAll(false);
+                                } else if (agreePrivacy && agreeAge) {
+                                  setAgreeAll(true);
+                                }
+                              }}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <span className="text-sm text-gray-700">
+                            [필수]&nbsp;
+                              <a href="https://www.heavenlytouch.kr/%EC%9D%B4%EC%9A%A9%EC%95%BD%EA%B4%80/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800 underline">
+                                이용약관
+                              </a> 동의
+                            </span>
+                          </label>
+                          
+                          <label className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              checked={agreePrivacy}
+                              onChange={(e) => {
+                                setAgreePrivacy(e.target.checked);
+                                if (!e.target.checked) {
+                                  setAgreeAll(false);
+                                } else if (agreeTerms && agreeAge) {
+                                  setAgreeAll(true);
+                                }
+                              }}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <span className="text-sm text-gray-700">
+                            [필수]&nbsp;
+                              <a href="https://www.heavenlytouch.kr/%EC%9D%B4%EC%9A%A9%EC%95%BD%EA%B4%80/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800 underline">
+                              개인정보 수집 및 이용
+                              </a> 동의
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+
                       {/* <div className="space-y-2">
                         <Label htmlFor="signup-group-name">조이름</Label>
                         <Input
