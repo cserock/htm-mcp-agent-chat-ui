@@ -198,7 +198,6 @@ function UserProfileDropdown({
               className="flex w-full items-center justify-between px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
             >
               <span>회원 탈퇴</span>
-              <span className="text-xs text-gray-400">⌘,</span>
             </button>
 
             <div className="my-1 border-t border-gray-100"></div>
