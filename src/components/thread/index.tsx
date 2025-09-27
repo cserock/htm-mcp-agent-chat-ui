@@ -33,6 +33,7 @@ import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import { getThreadSearchMetadata, useThreads } from "@/providers/Thread";
 import { MessageContentImageUrl } from "@langchain/core/messages";
+import { useAuth } from "@/contexts/AuthContext";
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -147,6 +148,9 @@ export function Thread() {
     if (!input.trim() || isLoading) return;
     setFirstTokenReceived(false);
 
+    // 로그인한 사용자의 아이디
+    const { user } = useAuth();
+
     const newHumanMessage: Message = {
       id: uuidv4(),
       type: "human",
@@ -173,7 +177,8 @@ export function Thread() {
         }),
         metadata: {
           ...getThreadSearchMetadata(stream.assistantId),
-          user_id: userId,
+          // 로그인한 사용자의 아이디 없으면, client에서 생성한 아이디 사용
+          user_id: (user?.id || userId),
         },
       },
     );
