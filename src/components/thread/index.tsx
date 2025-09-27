@@ -95,6 +95,7 @@ export function Thread() {
 
   const stream = useStreamContext();
   const { userId } = useThreads();
+  const { user } = useAuth();
 
   const messages = stream.messages;
   const isLoading = stream.isLoading;
@@ -147,9 +148,6 @@ export function Thread() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
     setFirstTokenReceived(false);
-
-    // 로그인한 사용자의 아이디
-    const { user } = useAuth();
 
     const newHumanMessage: Message = {
       id: uuidv4(),
