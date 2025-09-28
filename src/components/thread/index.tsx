@@ -149,6 +149,20 @@ export function Thread() {
     if (!input.trim() || isLoading) return;
     setFirstTokenReceived(false);
 
+    // Google Tag Manager 이벤트 전송
+    if (typeof window !== 'undefined') {
+      // dataLayer가 없으면 초기화
+      if (!(window as any).dataLayer) {
+        (window as any).dataLayer = [];
+      }
+      
+      (window as any).dataLayer.push({
+        event: 'sent_question',
+        user_id: user?.id || userId,
+        question: input.trim(),
+      });
+    }
+
     const newHumanMessage: Message = {
       id: uuidv4(),
       type: "human",
