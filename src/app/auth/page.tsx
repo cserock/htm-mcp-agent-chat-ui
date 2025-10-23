@@ -356,7 +356,7 @@ function AuthPageContent() {
                       type="text"
                       value={findUsername}
                       onChange={(e) => setFindUsername(e.target.value)}
-                      placeholder="가입시 입력한 이름을 입력하세요"
+                      placeholder="이름을 입력하세요"
                       required
                     />
                   </div>
@@ -367,7 +367,7 @@ function AuthPageContent() {
                       type="tel"
                       value={findPhone}
                       onChange={(e) => setFindPhone(e.target.value)}
-                      placeholder="가입시 입력한 휴대폰번호를 입력하세요 (예: 01012345678)"
+                      placeholder="휴대폰번호를 입력하세요 (예: 01012345678)"
                       pattern="[0-9]{11}"
                       required
                     />
@@ -476,12 +476,13 @@ function AuthPageContent() {
                 onValueChange={setActiveTab}
                 className="w-full"
               >
-                <TabsList className="grid w-full grid-cols-2">
+                {/* <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="signin">로그인</TabsTrigger>
                   <TabsTrigger value="signup">회원가입</TabsTrigger>
-                </TabsList>
+                </TabsList> */}
 
-                <div className="mt-6">
+                {/* mt-6 -> mt-0 변경됨 -> 디자인 수정 필요 */}
+                <div className="mt-0">
                   <TabsContent value="signin">
                     <form
                       onSubmit={handleSignIn}
